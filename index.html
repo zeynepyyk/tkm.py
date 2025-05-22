@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Taş Kağıt Makas Oyunu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #d065c3;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 { color: #333; }
+        form { margin: 20px auto; max-width: 300px; }
+        input, button, select {
+            padding: 10px;
+            margin: 10px;
+            width: 80%;
+            font-size: 16px;
+        }
+        .history {
+            background-color: #d065c3;
+            padding: 10px;
+            margin-top: 30px;
+            border-radius: 10px;
+        }
+        .motivation {
+            color: #007bff;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        .result {
+            font-size: 18px;
+            margin: 15px 0;
+        }
+        .score {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Taş - Kağıt - Makas</h1>
+
+    {% if restart %}
+        <h2>{{ final }}</h2>
+        <a href="{{ url_for('restart') }}">
+            <button>Yeniden Başla</button>
+        </a>
+        <div class="history">
+            <h3>Oyun Geçmişi</h3>
+            <ul>
+                {% for entry in history %}
+                    <li>Tur {{ entry.round }} - {{ entry.time }}: {{ entry.user }} vs {{ entry.computer }} → Kazanan: {{ entry.winner }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% elif name is defined %}
+        <div class="motivation">{{ motivation }}</div>
+        <p><strong>{{ name }} {{ surname }}</strong> - Tur {{ round }}/{{ total }}</p>
+        <p class="score">Sen: {{ user_score }} | Bilgisayar: {{ computer_score }}</p>
+        {% if result %}
+            <p class="result">{{ result }}</p>
+        {% endif %}
+        <form method="post">
+            {% for choice in choices %}
+                <button type="submit" name="choice" value="{{ choice }}">{{ choice }}</button>
+            {% endfor %}
+        </form>
+
+        {% if history %}
+        <div class="history">
+            <h3>Geçmiş</h3>
+            <ul>
+                {% for entry in history %}
+                    <li>Tur {{ entry.round }}: {{ entry.user }} vs {{ entry.computer }} → {{ entry.winner }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    {% else %}
+        <form method="post">
+            <input type="text" name="name" placeholder="Adınız" required>
+            <input type="text" name="surname" placeholder="Soyadınız" required>
+            <input type="number" name="rounds" placeholder="Kaç tur?" min="1" required>
+            <button type="submit">Başla</button>
+        </form>
+    {% endif %}
+</body>
+</html>
